@@ -4,7 +4,8 @@ import com.example.tdd.exampletdd.domain.Pessoa;
 import com.example.tdd.exampletdd.domain.Telefone;
 import com.example.tdd.exampletdd.repository.PessoaRepository;
 import com.example.tdd.exampletdd.service.exception.CpfException;
-import com.example.tdd.exampletdd.service.exception.NumCelularException;
+import com.example.tdd.exampletdd.service.exception.NumTelefoneException;
+import com.example.tdd.exampletdd.service.exception.TelefoneNaoEcontradoException;
 import com.example.tdd.exampletdd.service.impl.PessoaServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,10 +13,10 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -65,10 +66,28 @@ public class PessoaServiceTest {
         pessoaService.salvar(pessoa);
     }
 
-    @Test(expected = NumCelularException.class)
+    @Test(expected = NumTelefoneException.class)
     public void naoSalvarDuasPessoasComMesmoNumTelefone() throws Exception {
         when(pessoaRepository.findByTelefoneDddAndTelefoneNumero(DDD, NUMERO)).thenReturn(Optional.of(pessoa));
 
         pessoaService.salvar(pessoa);
+    }
+
+    @Test(expected = TelefoneNaoEcontradoException.class)
+    public void retornaExceptionSePessoaNaoTemNumeroTelefone() throws TelefoneNaoEcontradoException {
+        pessoaService.buscarPorTelefone(telefone);
+    }
+
+    @Test
+    public void buscarPessoaPeloDddENumTelefone() throws Exception {
+        when(pessoaRepository.findByTelefoneDddAndTelefoneNumero(DDD, NUMERO)).thenReturn(Optional.of(pessoa));
+        Pessoa pessoaTeste = pessoaService.buscarPorTelefone(telefone);
+
+        verify(pessoaRepository).findByTelefoneDddAndTelefoneNumero(DDD, NUMERO);
+
+        assertThat(pessoaTeste).isNotNull();
+        assertThat(pessoaTeste.getNome()).isEqualTo(NOME);
+        assertThat(pessoaTeste.getCpf()).isEqualTo(CPF);
+
     }
 }

@@ -1,4 +1,4 @@
 package com.example.tdd.exampletdd.service.exception;
 
-public class NumCelularException extends Exception {
+public class NumTelefoneException extends Exception {
 }

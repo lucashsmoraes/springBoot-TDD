@@ -1,10 +1,12 @@
 package com.example.tdd.exampletdd.service.impl;
 
 import com.example.tdd.exampletdd.domain.Pessoa;
+import com.example.tdd.exampletdd.domain.Telefone;
 import com.example.tdd.exampletdd.repository.PessoaRepository;
 import com.example.tdd.exampletdd.service.PessoaService;
 import com.example.tdd.exampletdd.service.exception.CpfException;
-import com.example.tdd.exampletdd.service.exception.NumCelularException;
+import com.example.tdd.exampletdd.service.exception.NumTelefoneException;
+import com.example.tdd.exampletdd.service.exception.TelefoneNaoEcontradoException;
 
 import java.util.Optional;
 
@@ -16,7 +18,7 @@ public class PessoaServiceImpl implements PessoaService {
         this.pessoaRepository = pessoaRepository;
     }
 
-    public Pessoa salvar(Pessoa pessoa) throws CpfException, NumCelularException {
+    public Pessoa salvar(Pessoa pessoa) throws CpfException, NumTelefoneException {
         Optional<Pessoa> optionalPessoa = pessoaRepository.findByCpf(pessoa.getCpf());
 
         if (optionalPessoa.isPresent()){
@@ -28,9 +30,15 @@ public class PessoaServiceImpl implements PessoaService {
         optionalPessoa = pessoaRepository.findByTelefoneDddAndTelefoneNumero(ddd, numero);
 
         if (optionalPessoa.isPresent()) {
-            throw new NumCelularException();
+            throw new NumTelefoneException();
         }
 
         return pessoaRepository.save(pessoa);
+    }
+
+    @Override
+    public Pessoa buscarPorTelefone(Telefone telefone) throws TelefoneNaoEcontradoException {
+        Optional<Pessoa> pessoaOptional= pessoaRepository.findByTelefoneDddAndTelefoneNumero(telefone.getDdd(), telefone.getNumero());
+        return pessoaOptional.orElseThrow(() -> new TelefoneNaoEcontradoException());
     }
 }
