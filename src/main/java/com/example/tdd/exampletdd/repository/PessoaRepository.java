@@ -9,4 +9,6 @@ public interface PessoaRepository {
     Pessoa save(Pessoa pessoa);
 
     Optional findByCpf(String cpf);
+
+    Optional findByTelefoneDddAndTelefoneNumero(String ddd, String numero);
 }

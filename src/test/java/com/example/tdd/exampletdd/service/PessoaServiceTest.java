@@ -1,8 +1,10 @@
 package com.example.tdd.exampletdd.service;
 
 import com.example.tdd.exampletdd.domain.Pessoa;
+import com.example.tdd.exampletdd.domain.Telefone;
 import com.example.tdd.exampletdd.repository.PessoaRepository;
 import com.example.tdd.exampletdd.service.exception.CpfException;
+import com.example.tdd.exampletdd.service.exception.NumCelularException;
 import com.example.tdd.exampletdd.service.impl.PessoaServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,6 +12,8 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.Optional;
 
 import static org.mockito.Mockito.verify;
@@ -20,12 +24,15 @@ public class PessoaServiceTest {
 
     private static final String NOME = "Lucas";
     private static final String CPF = "06101169996";
+    private static final String DDD = "48";
+    private static final String NUMERO = "985956966";
 
 
     private PessoaService pessoaService;
     @MockBean
     private PessoaRepository pessoaRepository;
     private Pessoa pessoa;
+    private Telefone telefone;
 
     @Before
     public void setUp() throws Exception {
@@ -35,7 +42,14 @@ public class PessoaServiceTest {
         pessoa.setNome(NOME);
         pessoa.setCpf(CPF);
 
+        telefone = new Telefone();
+        telefone.setDdd(DDD);
+        telefone.setNumero(NUMERO);
+
+        pessoa.setTelefones(Arrays.asList(telefone));
+
         when(pessoaRepository.findByCpf(CPF)).thenReturn(Optional.empty());
+        when(pessoaRepository.findByTelefoneDddAndTelefoneNumero(DDD, NUMERO)).thenReturn(Optional.empty());
     }
 
     @Test
@@ -47,6 +61,13 @@ public class PessoaServiceTest {
     @Test(expected = CpfException.class)
     public void naoSalvarDuasPessoasComMesmoCpf() throws Exception {
         when(pessoaRepository.findByCpf(CPF)).thenReturn(Optional.of(pessoa));
+
+        pessoaService.salvar(pessoa);
+    }
+
+    @Test(expected = NumCelularException.class)
+    public void naoSalvarDuasPessoasComMesmoNumTelefone() throws Exception {
+        when(pessoaRepository.findByTelefoneDddAndTelefoneNumero(DDD, NUMERO)).thenReturn(Optional.of(pessoa));
 
         pessoaService.salvar(pessoa);
     }
