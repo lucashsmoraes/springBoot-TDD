@@ -5,22 +5,34 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "PESSOA")
+@Table(name = "pessoa")
 public class Pessoa {
+
+    public Pessoa(){}
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long codigo;
 
     @Column(length = 80, nullable = false)
     private String nome;
+
     @Column(length = 11, nullable = false)
     private String cpf;
 
-    @OneToMany(mappedBy = "PESSOA")
+    @OneToMany(mappedBy = "pessoa")
     private List<Endereco> enderecos;
-    @OneToMany(mappedBy = "PESSOA")
+
+    @OneToMany(mappedBy = "pessoa")
     private List<Telefone> telefones;
+
+    public Long getCodigo() {
+        return codigo;
+    }
+
+    public void setCodigo(Long codigo) {
+        this.codigo = codigo;
+    }
 
     public String getNome() {
         return nome;
@@ -54,24 +66,18 @@ public class Pessoa {
         this.telefones = telefones;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Pessoa)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
+
         Pessoa pessoa = (Pessoa) o;
-        return Objects.equals(getId(), pessoa.getId());
+
+        return getCodigo() != null ? getCodigo().equals(pessoa.getCodigo()) : pessoa.getCodigo() == null;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId());
+        return getCodigo() != null ? getCodigo().hashCode() : 0;
     }
 }

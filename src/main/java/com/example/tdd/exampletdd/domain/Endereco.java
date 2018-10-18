@@ -1,15 +1,19 @@
 package com.example.tdd.exampletdd.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "ENDERECO")
+@Table(name = "endereco")
 public class Endereco {
+
+    public Endereco(){}
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long codigo;
     private String logradouro;
     private Integer numero;
     private String complemento;
@@ -18,11 +22,30 @@ public class Endereco {
     private String estado;
 
     @ManyToOne
-    @JoinColumn(name = "id_pessoa")
+    @JoinColumn(name = "codigo_pessoa")
+    @JsonIgnore
     private Pessoa pessoa;
+
+
 
     public String getLogradouro() {
         return logradouro;
+    }
+
+    public Long getCodigo() {
+        return codigo;
+    }
+
+    public void setCodigo(Long codigo) {
+        this.codigo = codigo;
+    }
+
+    public Pessoa getPessoa() {
+        return pessoa;
+    }
+
+    public void setPessoa(Pessoa pessoa) {
+        this.pessoa = pessoa;
     }
 
     public void setLogradouro(String logradouro) {
@@ -69,32 +92,18 @@ public class Endereco {
         this.estado = estado;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Pessoa getPessoa() {
-        return pessoa;
-    }
-
-    public void setPessoa(Pessoa pessoa) {
-        this.pessoa = pessoa;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Endereco)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
+
         Endereco endereco = (Endereco) o;
-        return Objects.equals(getId(), endereco.getId());
+
+        return getCodigo() != null ? getCodigo().equals(endereco.getCodigo()) : endereco.getCodigo() == null;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId());
+        return getCodigo() != null ? getCodigo().hashCode() : 0;
     }
 }
