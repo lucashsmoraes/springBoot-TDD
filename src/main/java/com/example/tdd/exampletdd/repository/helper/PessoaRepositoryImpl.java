@@ -25,20 +25,32 @@ public class PessoaRepositoryImpl implements PessoaRepositoryQueries{
 
         sb.append("SELECT p FROM Pessoa p where 1=1");
 
-        if(StringUtils.hasText(filtro.getNome())){
-            sb.append("AND p.nome LIKE :nome");
-            params.put("nome", "%" + filtro.getNome() + "%");
-        }
+        preencherNomeSeNecessario(filtro, sb, params);
 
+        preencherCpfSeNecessario(filtro, sb, params);
+
+        Query query = manager.createQuery(sb.toString(), Pessoa.class);
+        preencherParametrosDaQuery(params, query);
+        return query.getResultList();
+    }
+
+    private void preencherCpfSeNecessario(PessoaFiltro filtro, StringBuilder sb, Map<String, Object> params) {
         if(StringUtils.hasText(filtro.getCpf())){
             sb.append("AND p.cpf LIKE :cpf ");
             params.put("cpf", "%" + filtro.getCpf() + "%");
         }
+    }
 
-        Query query = manager.createQuery(sb.toString(), Pessoa.class);
+    private void preencherNomeSeNecessario(PessoaFiltro filtro, StringBuilder sb, Map<String, Object> params) {
+        if(StringUtils.hasText(filtro.getNome())){
+            sb.append("AND p.nome LIKE :nome");
+            params.put("nome", "%" + filtro.getNome() + "%");
+        }
+    }
+
+    private void preencherParametrosDaQuery(Map<String, Object> params, Query query) {
         for(Map.Entry<String, Object> param : params.entrySet()){
             query.setParameter(param.getKey(), param.getValue());
         }
-        return query.getResultList();
     }
 }
