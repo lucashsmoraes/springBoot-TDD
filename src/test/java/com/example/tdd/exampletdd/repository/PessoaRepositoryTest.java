@@ -75,5 +75,15 @@ public class PessoaRepositoryTest {
         assertThat(pessoaList.size()).isEqualTo(3);
     }
 
+    @Test
+    public void deve_filtrar_por_nome_e_cpf() throws Exception {
+        PessoaFiltro pessoaFiltro = new PessoaFiltro();
+        pessoaFiltro.setNome("Iago");
+        pessoaFiltro.setCpf("86730543540");
+
+        List<Pessoa> pessoas = sut.filtrar(pessoaFiltro);
+        assertThat(pessoas.size()).isEqualTo(1);
+    }
+
 
 }

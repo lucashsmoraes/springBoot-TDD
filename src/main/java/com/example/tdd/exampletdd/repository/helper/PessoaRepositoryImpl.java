@@ -36,14 +36,14 @@ public class PessoaRepositoryImpl implements PessoaRepositoryQueries{
 
     private void preencherCpfSeNecessario(PessoaFiltro filtro, StringBuilder sb, Map<String, Object> params) {
         if(StringUtils.hasText(filtro.getCpf())){
-            sb.append("AND p.cpf LIKE :cpf ");
+            sb.append(" AND p.cpf LIKE :cpf ");
             params.put("cpf", "%" + filtro.getCpf() + "%");
         }
     }
 
     private void preencherNomeSeNecessario(PessoaFiltro filtro, StringBuilder sb, Map<String, Object> params) {
         if(StringUtils.hasText(filtro.getNome())){
-            sb.append("AND p.nome LIKE :nome");
+            sb.append(" AND p.nome LIKE :nome");
             params.put("nome", "%" + filtro.getNome() + "%");
         }
     }
