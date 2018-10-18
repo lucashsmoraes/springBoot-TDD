@@ -85,5 +85,31 @@ public class PessoaRepositoryTest {
         assertThat(pessoas.size()).isEqualTo(1);
     }
 
+    @Test
+    public void deve_filtrar_pessoa_por_ddd() throws Exception {
+        PessoaFiltro pessoaFiltro = new PessoaFiltro();
+        pessoaFiltro.setDdd("21");
 
+        List<Pessoa> pessoas = sut.filtrar(pessoaFiltro);
+        assertThat(pessoas.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void deve_filtrar_pessoa_por_telefone() throws Exception {
+        PessoaFiltro pessoaFiltro = new PessoaFiltro();
+        pessoaFiltro.setTelefone("997538804");
+
+        List<Pessoa> pessoas = sut.filtrar(pessoaFiltro);
+        assertThat(pessoas.size()).isEqualTo(1);
+    }
+
+    @Test
+    public void deve_filtrar_pessoa_por_ddd_e_telefone() throws Exception {
+        PessoaFiltro pessoaFiltro = new PessoaFiltro();
+        pessoaFiltro.setDdd("21");
+        pessoaFiltro.setTelefone("997538804");
+
+        List<Pessoa> pessoas = sut.filtrar(pessoaFiltro);
+        assertThat(pessoas.size()).isEqualTo(1);
+    }
 }

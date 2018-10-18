@@ -23,15 +23,33 @@ public class PessoaRepositoryImpl implements PessoaRepositoryQueries{
         final StringBuilder sb = new StringBuilder();
         final Map<String, Object> params = new HashMap<>();
 
-        sb.append("SELECT p FROM Pessoa p where 1=1");
+        sb.append("SELECT p FROM Pessoa p JOIN p.telefones tele where 1=1");
 
         preencherNomeSeNecessario(filtro, sb, params);
 
         preencherCpfSeNecessario(filtro, sb, params);
 
+        preencherTelefoneSeNecessario(filtro, sb, params);
+
+        preencherDddSeNecessario(filtro, sb, params);
+
         Query query = manager.createQuery(sb.toString(), Pessoa.class);
         preencherParametrosDaQuery(params, query);
         return query.getResultList();
+    }
+
+    private void preencherTelefoneSeNecessario(PessoaFiltro filtro, StringBuilder sb, Map<String, Object> params) {
+        if(StringUtils.hasText(filtro.getTelefone())){
+            sb.append(" AND tele.numero = :numTel ");
+            params.put("numTel",  filtro.getTelefone() );
+        }
+    }
+
+    private void preencherDddSeNecessario(PessoaFiltro filtro, StringBuilder sb, Map<String, Object> params) {
+        if(StringUtils.hasText(filtro.getDdd())){
+            sb.append(" AND tele.ddd = :ddd ");
+            params.put("ddd",  filtro.getDdd() );
+        }
     }
 
     private void preencherCpfSeNecessario(PessoaFiltro filtro, StringBuilder sb, Map<String, Object> params) {
