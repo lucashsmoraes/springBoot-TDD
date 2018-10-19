@@ -5,6 +5,7 @@ import com.example.tdd.exampletdd.domain.Telefone;
 import com.example.tdd.exampletdd.service.PessoaService;
 import com.example.tdd.exampletdd.service.exception.TelefoneNaoEcontradoException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,6 +26,24 @@ public class PessoaResource {
         final Pessoa pessoa = pessoaService.buscarPorTelefone(telefone);
 
         return ResponseEntity.ok().body(pessoa);
+    }
+
+    @ExceptionHandler({TelefoneNaoEcontradoException.class})
+    public ResponseEntity<Erro> handlerTelefoneNaoEncontradoException(TelefoneNaoEcontradoException e) {
+            return new ResponseEntity<Erro>(new Erro("Não existe pessoa com o telefone (xx) xxxxxx"), HttpStatus.NOT_FOUND);
+    }
+
+    class Erro {
+        private final String erro;
+
+        public Erro(String erro){
+            this.erro = erro;
+        }
+
+        public String getErro() {
+            return erro;
+        }
+
     }
 
 }

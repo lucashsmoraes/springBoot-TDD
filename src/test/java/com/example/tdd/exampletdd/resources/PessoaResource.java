@@ -23,4 +23,18 @@ public class PessoaResource extends ExampletddApplicationTests {
                         "nome", equalTo("Cauê"),
                         "cpf", equalTo("38767897100"));
     }
+
+    @Test
+    public void deve_retornar_erro_se_pessoa_nao_existir() throws Exception {
+
+        given()
+                .pathParam("ddd", "99")
+                .pathParam("numero", "33456699")
+        .get("/pessoas/{ddd}/{numero}")
+        .then()
+                .log().body().and()
+                .statusCode(HttpStatus.NOT_FOUND.value())
+                .body("erro", equalTo("Não existe pessoa com o telefone (99)33456699"));
+
+    }
 }
