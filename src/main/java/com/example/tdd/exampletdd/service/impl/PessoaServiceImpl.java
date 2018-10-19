@@ -7,9 +7,11 @@ import com.example.tdd.exampletdd.service.PessoaService;
 import com.example.tdd.exampletdd.service.exception.CpfException;
 import com.example.tdd.exampletdd.service.exception.NumTelefoneException;
 import com.example.tdd.exampletdd.service.exception.TelefoneNaoEcontradoException;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Service
 public class PessoaServiceImpl implements PessoaService {
 
     private final PessoaRepository pessoaRepository;

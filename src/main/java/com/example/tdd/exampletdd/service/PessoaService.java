@@ -5,6 +5,8 @@ import com.example.tdd.exampletdd.domain.Telefone;
 import com.example.tdd.exampletdd.service.exception.CpfException;
 import com.example.tdd.exampletdd.service.exception.NumTelefoneException;
 import com.example.tdd.exampletdd.service.exception.TelefoneNaoEcontradoException;
+import org.springframework.stereotype.Service;
+
 
 public interface PessoaService {
 
