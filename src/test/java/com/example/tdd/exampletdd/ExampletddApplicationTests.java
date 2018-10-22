@@ -18,11 +18,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 public abstract class ExampletddApplicationTests {
 
     @Value("${local.server.port}")
-    protected int port;
+    protected int porta;
 
     @Before
     public void setup() throws Exception {
-        RestAssured.port = port;
+        RestAssured.port = porta;
     }
 
 

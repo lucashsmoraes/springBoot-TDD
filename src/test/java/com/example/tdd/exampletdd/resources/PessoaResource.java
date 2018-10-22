@@ -1,8 +1,13 @@
 package com.example.tdd.exampletdd.resources;
 
 import com.example.tdd.exampletdd.ExampletddApplicationTests;
+import com.example.tdd.exampletdd.domain.Pessoa;
+import com.example.tdd.exampletdd.domain.Telefone;
+import io.restassured.http.ContentType;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
+
+import java.util.Arrays;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -37,4 +42,36 @@ public class PessoaResource extends ExampletddApplicationTests {
                 .body("erro", equalTo("Não existe pessoa com o telefone (99)33456699"));
 
     }
+
+    @Test
+    public void salvar_nova_pessoa() throws Exception {
+        final Pessoa pessoa = new Pessoa();
+        pessoa.setNome("João");
+        pessoa.setCpf("62461410720");
+
+        final Telefone tel = new Telefone();
+        tel.setDdd("79");
+        tel.setNumero("36977168");
+
+        pessoa.setTelefones(Arrays.asList(tel));
+
+        given()
+                .request()
+                .header("Accept", ContentType.ANY)
+                .header("Content-Type", ContentType.JSON)
+                .body(pessoa)
+        .when()
+        .post("/pessoas")
+        .then()
+                .log().headers()
+            .and()
+                .log().body()
+            .and()
+                .statusCode(HttpStatus.CREATED.value())
+                .header("Location", equalTo("http://localhost:"+porta+"/pessoas/79/36977168"))
+                .body("codigo", equalTo(6),
+                        "nome", equalTo("João"),
+                        "cpf", equalTo("62461410720"));
+    }
+
 }
