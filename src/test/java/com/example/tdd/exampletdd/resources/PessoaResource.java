@@ -3,6 +3,7 @@ package com.example.tdd.exampletdd.resources;
 import com.example.tdd.exampletdd.ExampletddApplicationTests;
 import com.example.tdd.exampletdd.domain.Pessoa;
 import com.example.tdd.exampletdd.domain.Telefone;
+import com.example.tdd.exampletdd.repository.filtro.PessoaFiltro;
 import io.restassured.http.ContentType;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
@@ -11,6 +12,7 @@ import java.util.Arrays;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 
 
 public class PessoaResource extends ExampletddApplicationTests {
@@ -98,6 +100,26 @@ public class PessoaResource extends ExampletddApplicationTests {
                 .and()
                     .statusCode(HttpStatus.BAD_REQUEST.value())
                     .body("erro", equalTo("Já existe pessoa cadastrada com esse CPF"));
+    }
+
+    @Test
+    public void deve_filtrar_pessoas_pelo_nome() throws Exception {
+        final PessoaFiltro filtro = new PessoaFiltro();
+        filtro.setNome("a");
+        given()
+                .request()
+                .header("Accept", ContentType.ANY)
+                .header("Content-type", ContentType.JSON)
+                .body(filtro)
+            .when()
+            .post("/pessoas/filtrar")
+            .then()
+                .log().body()
+            .and()
+                .statusCode(HttpStatus.OK.value())
+                .body("codigo", containsInAnyOrder(1, 3, 5),
+                        "nome", containsInAnyOrder("Thiago", "Iago", "Cauê"),
+                        "cpf", containsInAnyOrder("86730543540", "72788740417", "38767897100"));
     }
 
 }

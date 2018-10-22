@@ -2,6 +2,8 @@ package com.example.tdd.exampletdd.Resource;
 
 import com.example.tdd.exampletdd.domain.Pessoa;
 import com.example.tdd.exampletdd.domain.Telefone;
+import com.example.tdd.exampletdd.repository.PessoaRepository;
+import com.example.tdd.exampletdd.repository.filtro.PessoaFiltro;
 import com.example.tdd.exampletdd.service.PessoaService;
 import com.example.tdd.exampletdd.service.exception.CpfException;
 import com.example.tdd.exampletdd.service.exception.NumTelefoneException;
@@ -14,6 +16,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.servlet.http.HttpServletResponse;
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/pessoas")
@@ -21,6 +24,8 @@ public class PessoaResource {
 
     @Autowired
     private PessoaService pessoaService;
+    @Autowired
+    private PessoaRepository pessoaRepository;
 
     @RequestMapping(value = "/{ddd}/{numero}", method = RequestMethod.GET)
     public ResponseEntity<Pessoa> buscarPorDddEnumTelefone(
@@ -44,6 +49,14 @@ public class PessoaResource {
         response.setHeader("Location", uri.toASCIIString());
 
         return new ResponseEntity<>(pessoaSalva, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/filtrar")
+    public ResponseEntity<List<Pessoa>> filtrar(@RequestBody PessoaFiltro pessoaFiltro){
+        List<Pessoa> pessoas = pessoaRepository.filtrar(pessoaFiltro);
+
+        return new ResponseEntity<>(pessoas, HttpStatus.OK);
+
     }
 
     @ExceptionHandler({CpfException.class})
