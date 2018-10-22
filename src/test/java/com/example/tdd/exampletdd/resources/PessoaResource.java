@@ -74,4 +74,30 @@ public class PessoaResource extends ExampletddApplicationTests {
                         "cpf", equalTo("62461410720"));
     }
 
+    @Test
+    public void nao_salvar_pessoa_com_o_mesmo_cpf() throws Exception {
+        final Pessoa pessoa = new Pessoa();
+        pessoa.setNome("João");
+        pessoa.setCpf("72788740417");
+
+        final Telefone tel = new Telefone();
+        tel.setDdd("79");
+        tel.setNumero("36977168");
+
+        pessoa.setTelefones(Arrays.asList(tel));
+
+        given()
+                .request()
+                .header("Accept", ContentType.ANY)
+                .header("Content-Type", ContentType.JSON)
+                .body(pessoa)
+            .when()
+            .post("/pessoas")
+            .then()
+                    .log().body()
+                .and()
+                    .statusCode(HttpStatus.BAD_REQUEST.value())
+                    .body("erro", equalTo("Já existe pessoa cadastrada com esse CPF"));
+    }
+
 }
